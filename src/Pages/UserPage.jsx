@@ -99,7 +99,7 @@ export default function UserPage() {
   };
 
   return (
-    <div className="App">
+    <div >
       <div style={{ padding: "5%" }}>
         <h2>User List</h2>
         <Box mb={2} display="flex" justifyContent="flex-end" spacing={10}>
@@ -255,19 +255,20 @@ export default function UserPage() {
       { label: "Username", align: "left" },
       { label: "Mobile", align: "left" },
       { label: "Role", align: "left" },
-      { label: "", align: "left" },
+      { label: "Actions", align: "left" },
     ];
-
+  
     return (
       <TableRow>
         {headings.map((heading, index) => (
-          <TableCell key={index} align={heading.align || "left"}>
-            {heading.label}
+          <TableCell key={index} align={heading.align || "left"} className="table-header-cell">
+           <span style={{color: 'white'}} > {heading.label}</span>
           </TableCell>
         ))}
       </TableRow>
     );
   }
+  
 
   function modalContainer() {
     return (

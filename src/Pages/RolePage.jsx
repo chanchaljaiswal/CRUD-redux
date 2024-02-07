@@ -319,12 +319,12 @@ export default function RolePage() {
         </Box>
 
         <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <Table sx={{ minWidth: 250 }} aria-label="simple table">
             <TableHead>
-              <TableRow>
-                <TableCell>Role Key</TableCell>
-                <TableCell align="left">Role Label</TableCell>
-                <TableCell align="left"></TableCell>
+              <TableRow  className="table-header-cell">
+                <TableCell style={{color: 'white'}} >Role Key</TableCell>
+                <TableCell style={{color: 'white'}}  >Role Label</TableCell>
+                <TableCell  style={{color: 'white'}} >Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

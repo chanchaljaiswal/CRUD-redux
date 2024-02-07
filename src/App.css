@@ -1,5 +1,7 @@
 .App {
   text-align: center;
+  background-color: rgb(234, 245, 241);
+  min-height: 100vh;
 }
 
 
@@ -9,6 +11,11 @@
   }
 }
 
+.table-header-cell {
+  font-weight: bold;
+  background-color:#1976d2;
+  padding: 10px; /* Example padding */
+}
 
 
 
