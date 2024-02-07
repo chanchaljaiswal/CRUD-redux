@@ -289,6 +289,7 @@ export default function UserPage() {
             name="password"
             value={newUserData.password}
             label="Password"
+            type="password"
             onChange={handleNewUserDataChange}
           />
           <Button onClick={addUserHandler} variant="contained" color="primary">

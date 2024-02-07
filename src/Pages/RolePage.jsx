@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setEditRow, clearEditRow } from "../Store/editingSlice";
 import { deleteRole, selectRoles, updateRole } from "../Store/rolesSlice";
@@ -8,10 +8,6 @@ import {
   IconButton,
   Modal,
   TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Table,
   TableBody,
   TableCell,
@@ -26,22 +22,35 @@ import CheckIcon from "@mui/icons-material/Check";
 
 export default function RolePage() {
   const roles = useSelector(selectRoles);
-  const editRow = useSelector((state) => state.editing);
+  const editRowKey = useSelector((state) => state.editing);
   const dispatch = useDispatch();
   const [newRoleData, setNewRoleData] = useState({
     roleLabel: "",
     roleKey: "",
   });
+  const [editRoleData, setEditRoleData] = useState({
+    roleLabel: "",
+    roleKey: "",
+  });
   const [showAddFields, setShowAddFields] = useState(false);
+  const [deleteRoleKey, setDeleteRoleKey] = useState(null); // New state for tracking role key to delete
 
   const setEdited = (roleKey) => {
+    setEditRoleData(roles.find((role) => role.roleKey === roleKey));
     dispatch(setEditRow(roleKey));
   };
 
   const save = (roleKey) => {
-    const updatedRole = roles.find((role) => role.roleKey === roleKey);
-    dispatch(updateRole({ roleKey, updatedRole }));
+    dispatch(updateRole({ roleKey, updatedRole: editRoleData }));
     dispatch(clearEditRow());
+  };
+
+  const handleEditRoleDataChange = (e) => {
+    const { name, value } = e.target;
+    setEditRoleData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
   const handleNewRoleDataChange = (e) => {
@@ -62,7 +71,14 @@ export default function RolePage() {
   };
 
   const handleDelete = (roleKey) => {
-    dispatch(deleteRole(roleKey));
+    setDeleteRoleKey(roleKey); // Set the role key to delete when delete button is clicked
+  };
+
+  const confirmDelete = () => {
+    if (deleteRoleKey !== null) {
+      dispatch(deleteRole(deleteRoleKey)); // Delete the role
+      setDeleteRoleKey(null); // Reset the role key to null after deletion
+    }
   };
 
   return (
@@ -87,10 +103,10 @@ export default function RolePage() {
               {roles.map((role) => (
                 <TableRow key={role.roleKey}>
                   <TableCell component="th" scope="row">
-                    {editRow === role.roleKey ? (
+                    {editRowKey === role.roleKey ? (
                       <TextField
-                        onChange={handleNewRoleDataChange}
-                        value={role.roleKey}
+                        onChange={handleEditRoleDataChange}
+                        value={editRoleData.roleKey}
                         name="roleKey"
                       />
                     ) : (
@@ -98,10 +114,10 @@ export default function RolePage() {
                     )}
                   </TableCell>
                   <TableCell align="left">
-                    {editRow === role.roleKey ? (
+                    {editRowKey === role.roleKey ? (
                       <TextField
-                        onChange={handleNewRoleDataChange}
-                        value={role.roleLabel}
+                        onChange={handleEditRoleDataChange}
+                        value={editRoleData.roleLabel}
                         name="roleLabel"
                       />
                     ) : (
@@ -109,17 +125,17 @@ export default function RolePage() {
                     )}
                   </TableCell>
                   <TableCell align="left">
-                    {editRow === role.roleKey ? (
+                    {editRowKey === role.roleKey ? (
                       <IconButton onClick={() => save(role.roleKey)}>
-                        <CheckIcon size="small" />
+                        <CheckIcon />
                       </IconButton>
                     ) : (
                       <IconButton onClick={() => setEdited(role.roleKey)}>
-                        <EditIcon size="small" />
+                        <EditIcon />
                       </IconButton>
                     )}
                     <IconButton onClick={() => handleDelete(role.roleKey)}>
-                      <DeleteIcon size="small" />
+                      <DeleteIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -164,6 +180,34 @@ export default function RolePage() {
           />
           <Button onClick={addRoleHandler} variant="contained" color="primary">
             Add Role
+          </Button>
+        </Box>
+      </Modal>
+      {/* Deletion confirmation modal */}
+      <Modal
+        open={deleteRoleKey !== null}
+        onClose={() => setDeleteRoleKey(null)}
+        aria-labelledby="delete-role-modal"
+        aria-describedby="delete-role-form"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: 400,
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+          }}
+        >
+          <p>Are you sure you want to delete this role?</p>
+          <Button onClick={confirmDelete} variant="contained" color="primary">
+            Yes
+          </Button>
+          <Button style={{marginLeft: '10px'}}  onClick={() => setDeleteRoleKey(null)} variant="contained" color="secondary">
+            Cancel
           </Button>
         </Box>
       </Modal>
